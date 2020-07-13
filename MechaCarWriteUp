@@ -1,0 +1,162 @@
+Module 15 Challenge
+
+MPG REGRESSION
+
+Using multiple linear regression, design a linear model that predicts the mpg of MechaCar prototypes using a number of variables within the MechaCar mpg dataset. Create a separate text file called MechaCarWriteUp.txt. In the text file, provide a small writeup of your interpretation of the multiple linear regression results. Be sure to include the following details:
+
+1. Which variables/coefficients provided a non-random amount of variance to the mpg values in the dataset?
+
+> lm(mpg ~ weight + angle, data=MechaCar_mpg)
+
+Call:
+lm(formula = mpg ~ weight + angle, data = MechaCar_mpg)
+
+Coefficients:
+(Intercept)       weight        angle  
+ 40.9715843    0.0007547   -0.0085360  
+
+
+> summary(lm(mpg ~ weight + angle, data=MechaCar_mpg))
+
+Call:
+lm(formula = mpg ~ weight + angle, data = MechaCar_mpg)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-35.753 -11.409  -2.000   8.607  33.407 
+
+Coefficients:
+              Estimate Std. Error t value Pr(>|t|)    
+(Intercept) 40.9715843 10.8721028   3.769 0.000458 ***
+weight       0.0007547  0.0012332   0.612 0.543486    
+angle       -0.0085360  0.1163791  -0.073 0.941842    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 15.83 on 47 degrees of freedom
+Multiple R-squared:  0.008337,	Adjusted R-squared:  -0.03386 
+F-statistic: 0.1976 on 2 and 47 DF,  p-value: 0.8214
+
+ 
+2. Is the slope of the linear model considered to be zero? Why or why not?
+
+The slope is considered zero, since the p-value is significantly higher than 0.05
+
+3. Does this linear model predict mpg of MechaCar prototypes effectively? Why or why not?
+
+This model doesn't predict the mpg for these models. Even after several iterations of swapping variables, the multiple linear regression is less effective of a single linear regression with the "weight" as the independent variable.
+
+
+SUSPENSION COIL SUMMARY
+
+Create a summary statistics table for the suspension coil's pounds-per-inch continuous variable.
+ 
+Be sure to include the following metrics:
+  Mean
+  Median
+  Variance
+  Standard deviation
+
+
+coil_data <- read_csv("Suspension_Coil.csv")
+ggplot(coil_data,aes(x=PSI)) + geom_density()
+
+# See attached file: Suspension Coil Normal Distribution Chart
+
+> summary(coil_data$PSI)
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+   1452    1498    1500    1499    1501    1542 
+
+> > aov(PSI ~ VehicleID,data=coil_data)
+Call:
+   aov(formula = PSI ~ VehicleID, data = coil_data)
+
+Terms:
+                VehicleID Residuals
+Sum of Squares    9277.24      4.50
+Deg. of Freedom       148         1
+
+Residual standard error: 2.12132
+Estimated effects may be unbalanced
+
+> sd(coil_data$PSI)
+[1] 7.892627
+
+Based on the data, the mean PSI was 1499, and none of the suspensions tested exceeded the requirement (> 100 PSI), so the manufactured results met the design criterion, with flying covers.
+
+SUSPENSION COIL T-TEST
+
+# Given the data is not very large (only 150 Vehicles), I used a one-sample t-test. My sample was 30 Vehicles
+
+> sample_data <- coil_data %>% sample_n(30)
+
+> t.test((sample_data$PSI),mu=mean(coil_data$PSI))
+
+	One Sample t-test
+
+data:  (sample_data$PSI)
+t = 4.312, df = 29, p-value = 0.0001705
+alternative hypothesis: true mean is not equal to 1498.78
+95 percent confidence interval:
+ 1499.719 1501.414
+sample estimates:
+mean of x 
+ 1500.567 
+
+The sample data is representative with the data in the population; the mean for the sample was 1501, vs. a mean of 1499 for the total population. 
+
+DESIGN MY OWN STUDY
+
+1. The first step would be to determine what kind of vehicle should MechaCar build:
+
+    a. Sedan
+    b. SUV
+    c. Compact
+    d. Truck
+    
+MechaCar should research industry data to analyze the 2019 auto sales. The company should compare the types of cars that were sold and would focus on the type which was most popular.  
+
+2. Use the same industry auto sales data to slice the data into different sales price ranges:
+
+    a. < $30,000
+    b. $30,001 to $45,000
+    c. $45,001 to $60,000
+    d. $60,001 to $80,000
+    e. > $80,000
+
+MechaCar should calculate the number of vehicles were sold in each price range, and the number of sales for each car model within each target.
+
+MechaCar should focus on the top two ranges in terms of unit sales. Having two targeted price ranges would allow MechaCar to design a "standard" model and a "luxury" model. 
+
+3. For the lower price range, MechaCar determine what type and size of engine should they build:
+
+    a. Traditional vs. hybrid vs. electrical
+    b. Six cylindar vs. four cylindar
+    
+Electrical vehicles are becoming very popular and have enormous benefits for the consumers and environment, but most electric/hybrid engines are more expensive and many consumers may not believe that the benefit justify a higher cost. MechaCar should determine the number of units sold for each category:
+
+            4_Cyl     6_Cyl
+Traditional
+Hybrid
+Electrical
+
+4. For the Luxury Model, MechCar should determine what options would the consumer to pay for; for example will consumer pay for a convertible top, superior audio, autonomous driving tools, etc.
+
+For the analysis, I would build two separate data frames:
+
+    a. standard_car: includes all vehicle types sold in the lower price range
+    b. luxury_car: includes all vehicle types sold in the higher range 
+
+USing the two data frames, I would begin building a multiple linear regression model with the number of unit sales as the dependent variables, with independent variables of engine size, engine type, convertible, premium audio and autonomous driving tools. 
+
+The null hypothesis is that consumers do not car about the size of the vehicle features.
+
+The alternative hypothesis is that consumer are will to pay and attractive with engine type, interior and exterior features.
+
+
+
+
+
+
+
+
